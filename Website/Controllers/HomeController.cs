@@ -37,5 +37,10 @@ namespace Website.Controllers
         {
             Console.WriteLine("NO");
         }
+
+        public void ThirdMethod()
+        {
+            Console.WriteLine("MAYBE");
+        }
     }
 }
