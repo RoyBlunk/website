@@ -28,5 +28,9 @@ namespace Website.Controllers
             return View();
         }
 
+        public void FirstMethod()
+        {
+            Console.WriteLine("YE");
+        }
     }
 }
