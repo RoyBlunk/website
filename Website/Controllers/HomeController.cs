@@ -32,5 +32,10 @@ namespace Website.Controllers
         {
             Console.WriteLine("YE");
         }
+
+        public void SecondMethod()
+        {
+            Console.WriteLine("NO");
+        }
     }
 }
