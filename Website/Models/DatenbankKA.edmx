@@ -85,21 +85,34 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="AgarModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="AgarEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="User" EntityType="AgarModel.User" />
+          <EntitySet Name="UserData" EntityType="AgarModel.UserData" />
+          <EntitySet Name="UserOptions" EntityType="AgarModel.UserOptions" />
+          <AssociationSet Name="FK_UserData_User" Association="AgarModel.FK_UserData_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserData" EntitySet="UserData" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserOptions_User" Association="AgarModel.FK_UserOptions_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserOptions" EntitySet="UserOptions" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Username" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Image" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Image" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Rank" Type="Int32" Nullable="false" />
           <Property Name="Deleted" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="UserData" Relationship="Self.FK_UserData_User" FromRole="User" ToRole="UserData" />
-          <NavigationProperty Name="UserOptions" Relationship="Self.FK_UserOptions_User" FromRole="User" ToRole="UserOptions" />
+          <NavigationProperty Name="UserData" Relationship="AgarModel.FK_UserData_User" FromRole="User" ToRole="UserData" />
+          <NavigationProperty Name="UserOptions" Relationship="AgarModel.FK_UserOptions_User" FromRole="User" ToRole="UserOptions" />
         </EntityType>
         <EntityType Name="UserData">
           <Key>
@@ -114,7 +127,7 @@
           <Property Name="GotSkins" Type="Int32" Nullable="false" />
           <Property Name="Coins" Type="Int32" Nullable="false" />
           <Property Name="Level" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="Self.FK_UserData_User" FromRole="UserData" ToRole="User" />
+          <NavigationProperty Name="User" Relationship="AgarModel.FK_UserData_User" FromRole="UserData" ToRole="User" />
         </EntityType>
         <EntityType Name="UserOptions">
           <Key>
@@ -126,11 +139,11 @@
           <Property Name="ShowMass" Type="Boolean" Nullable="false" />
           <Property Name="NoNames" Type="Boolean" Nullable="false" />
           <Property Name="NoSkins" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="Self.FK_UserOptions_User" FromRole="UserOptions" ToRole="User" />
+          <NavigationProperty Name="User" Relationship="AgarModel.FK_UserOptions_User" FromRole="UserOptions" ToRole="User" />
         </EntityType>
         <Association Name="FK_UserData_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
-          <End Role="UserData" Type="Self.UserData" Multiplicity="*" />
+          <End Type="AgarModel.User" Role="User" Multiplicity="1" />
+          <End Type="AgarModel.UserData" Role="UserData" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="ID" />
@@ -141,8 +154,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_UserOptions_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
-          <End Role="UserOptions" Type="Self.UserOptions" Multiplicity="*" />
+          <End Type="AgarModel.User" Role="User" Multiplicity="1" />
+          <End Type="AgarModel.UserOptions" Role="UserOptions" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="ID" />
@@ -152,19 +165,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="AgarEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="User" EntityType="Self.User" />
-          <EntitySet Name="UserData" EntityType="Self.UserData" />
-          <EntitySet Name="UserOptions" EntityType="Self.UserOptions" />
-          <AssociationSet Name="FK_UserData_User" Association="Self.FK_UserData_User">
-            <End Role="User" EntitySet="User" />
-            <End Role="UserData" EntitySet="UserData" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserOptions_User" Association="Self.FK_UserOptions_User">
-            <End Role="User" EntitySet="User" />
-            <End Role="UserOptions" EntitySet="UserOptions" />
-          </AssociationSet>
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -174,42 +174,42 @@
           <EntitySetMapping Name="User">
             <EntityTypeMapping TypeName="AgarModel.User">
               <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Image" ColumnName="Image" />
-                <ScalarProperty Name="Rank" ColumnName="Rank" />
                 <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="Rank" ColumnName="Rank" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="UserData">
             <EntityTypeMapping TypeName="AgarModel.UserData">
               <MappingFragment StoreEntitySet="UserData">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="TimeInGame" ColumnName="TimeInGame" />
-                <ScalarProperty Name="TimeInLeaderboard" ColumnName="TimeInLeaderboard" />
-                <ScalarProperty Name="EatedPlayer" ColumnName="EatedPlayer" />
-                <ScalarProperty Name="MassRecord" ColumnName="MassRecord" />
-                <ScalarProperty Name="GotSkins" ColumnName="GotSkins" />
-                <ScalarProperty Name="Coins" ColumnName="Coins" />
                 <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="Coins" ColumnName="Coins" />
+                <ScalarProperty Name="GotSkins" ColumnName="GotSkins" />
+                <ScalarProperty Name="MassRecord" ColumnName="MassRecord" />
+                <ScalarProperty Name="EatedPlayer" ColumnName="EatedPlayer" />
+                <ScalarProperty Name="TimeInLeaderboard" ColumnName="TimeInLeaderboard" />
+                <ScalarProperty Name="TimeInGame" ColumnName="TimeInGame" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="UserOptions">
             <EntityTypeMapping TypeName="AgarModel.UserOptions">
               <MappingFragment StoreEntitySet="UserOptions">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="BlackTheme" ColumnName="BlackTheme" />
-                <ScalarProperty Name="ShowMass" ColumnName="ShowMass" />
-                <ScalarProperty Name="NoNames" ColumnName="NoNames" />
                 <ScalarProperty Name="NoSkins" ColumnName="NoSkins" />
+                <ScalarProperty Name="NoNames" ColumnName="NoNames" />
+                <ScalarProperty Name="ShowMass" ColumnName="ShowMass" />
+                <ScalarProperty Name="BlackTheme" ColumnName="BlackTheme" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

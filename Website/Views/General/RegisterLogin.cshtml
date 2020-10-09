@@ -1,0 +1,34 @@
+﻿<head>
+    <title>@ViewBag.Title</title>
+</head>
+
+@section Scripts  {
+<script>
+    let content = "";
+    switch (JSON.stringify(@ViewBag.State)) {
+        case "0":
+            content = `
+                <form id="loginForm" action="/Home/Index">
+                    <input type="text" placeholder="kennwort-login" id="kennwortLoginInput" />
+                    <input type="password" placeholder="passwort-login" id="passwortLoginInput" />
+                    <button type="submit">Login</button>
+                </form>
+             `;
+            break;
+        case "1":
+        default:
+            content = `
+                <form id="registerForm" action="/Home/Index">
+                    <input type="text" placeholder="kennwort-register" id="kennwortRegisterInput" />
+                    <input type="password" placeholder="passwort-register" id="passwortRegisterInput" />
+                    <button type="submit">Register</button>
+                </form>
+            `;
+            break;
+    }
+
+    $("#formdiv").append(content);
+</script>
+}
+
+<div id="formdiv"></div>

@@ -1,3 +1,18 @@
-﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@using Website.Classes;
+@{
+    var type = 0;
+    if (Template.LayoutType() == 1)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+        type = 1;
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout2.cshtml";
+        type = 2;
+    }
+
+    User user = new User();
 }
+
+<div>Layouttype: @type</div>

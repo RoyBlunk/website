@@ -4,104 +4,332 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="TestSiteModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="CarCompany">
+    <Schema Namespace="TestSiteModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Email">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CarName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="256" Nullable="false" />
+          <Property Name="Verified" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Kennwort">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="Kennwort" Type="varchar" MaxLength="128" Nullable="false" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Password">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="Passwort" Type="varchar" MaxLength="256" Nullable="false" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Salt">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="Salt" Type="varchar" MaxLength="128" Nullable="false" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="CarCompanyID" Type="int" Nullable="false" />
+          <Property Name="Deleted" Type="bit" Nullable="false" />
         </EntityType>
-        <Association Name="FK_User_CarCompany">
-          <End Role="CarCompany" Type="Self.CarCompany" Multiplicity="1" />
-          <End Role="User" Type="Self.User" Multiplicity="*" />
+        <Association Name="FK_Email_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Email" Type="Self.Email" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="CarCompany">
+            <Principal Role="User">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="User">
-              <PropertyRef Name="CarCompanyID" />
+            <Dependent Role="Email">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Kennwort_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Kennwort" Type="Self.Kennwort" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Kennwort">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Password_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Password" Type="Self.Password" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Password">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Salt_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Salt" Type="Self.Salt" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Salt">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User1" Type="Self.User" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="User1">
+              <PropertyRef Name="ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="TestSiteModelStoreContainer">
-          <EntitySet Name="CarCompany" EntityType="Self.CarCompany" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Email" EntityType="Self.Email" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Kennwort" EntityType="Self.Kennwort" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Password" EntityType="Self.Password" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Salt" EntityType="Self.Salt" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_User_CarCompany" Association="Self.FK_User_CarCompany">
-            <End Role="CarCompany" EntitySet="CarCompany" />
+          <AssociationSet Name="FK_Email_User" Association="Self.FK_Email_User">
             <End Role="User" EntitySet="User" />
+            <End Role="Email" EntitySet="Email" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Kennwort_User" Association="Self.FK_Kennwort_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Kennwort" EntitySet="Kennwort" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Password_User" Association="Self.FK_Password_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Password" EntitySet="Password" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Salt_User" Association="Self.FK_Salt_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Salt" EntitySet="Salt" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_User" Association="Self.FK_User_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="User1" EntitySet="User" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="TestSiteModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="CarCompany">
+        <EntityContainer Name="TestSiteEntities2" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Email" EntityType="TestSiteModel.Email" />
+          <EntitySet Name="Kennwort" EntityType="TestSiteModel.Kennwort" />
+          <EntitySet Name="Password" EntityType="TestSiteModel.Password" />
+          <EntitySet Name="Salt" EntityType="TestSiteModel.Salt" />
+          <EntitySet Name="User" EntityType="TestSiteModel.User" />
+          <AssociationSet Name="FK_Email_User" Association="TestSiteModel.FK_Email_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Email" EntitySet="Email" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Kennwort_User" Association="TestSiteModel.FK_Kennwort_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Kennwort" EntitySet="Kennwort" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Password_User" Association="TestSiteModel.FK_Password_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Password" EntitySet="Password" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Salt_User" Association="TestSiteModel.FK_Salt_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Salt" EntitySet="Salt" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_User" Association="TestSiteModel.FK_User_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="User1" EntitySet="User" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Email">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CarName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="Self.FK_User_CarCompany" FromRole="CarCompany" ToRole="User" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="Email1" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="Verified" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="TestSiteModel.FK_Email_User" FromRole="Email" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Kennwort">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="Kennwort1" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="TestSiteModel.FK_Kennwort_User" FromRole="Kennwort" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Password">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="Passwort" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="TestSiteModel.FK_Password_User" FromRole="Password" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Salt">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="Salt1" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="TestSiteModel.FK_Salt_User" FromRole="Salt" ToRole="User" />
         </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="CarCompanyID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="CarCompany" Relationship="Self.FK_User_CarCompany" FromRole="User" ToRole="CarCompany" />
+          <Property Name="Deleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Email" Relationship="TestSiteModel.FK_Email_User" FromRole="User" ToRole="Email" />
+          <NavigationProperty Name="Kennwort" Relationship="TestSiteModel.FK_Kennwort_User" FromRole="User" ToRole="Kennwort" />
+          <NavigationProperty Name="Password" Relationship="TestSiteModel.FK_Password_User" FromRole="User" ToRole="Password" />
+          <NavigationProperty Name="Salt" Relationship="TestSiteModel.FK_Salt_User" FromRole="User" ToRole="Salt" />
+          <NavigationProperty Name="User1" Relationship="TestSiteModel.FK_User_User" FromRole="User" ToRole="User1" />
+          <NavigationProperty Name="User2" Relationship="TestSiteModel.FK_User_User" FromRole="User1" ToRole="User" />
         </EntityType>
-        <Association Name="FK_User_CarCompany">
-          <End Role="CarCompany" Type="Self.CarCompany" Multiplicity="1" />
-          <End Role="User" Type="Self.User" Multiplicity="*" />
+        <Association Name="FK_Email_User">
+          <End Type="TestSiteModel.User" Role="User" Multiplicity="1" />
+          <End Type="TestSiteModel.Email" Role="Email" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="CarCompany">
+            <Principal Role="User">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="User">
-              <PropertyRef Name="CarCompanyID" />
+            <Dependent Role="Email">
+              <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="TestSiteEntities2" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="CarCompany" EntityType="Self.CarCompany" />
-          <EntitySet Name="User" EntityType="Self.User" />
-          <AssociationSet Name="FK_User_CarCompany" Association="Self.FK_User_CarCompany">
-            <End Role="CarCompany" EntitySet="CarCompany" />
-            <End Role="User" EntitySet="User" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema>
+        <Association Name="FK_Kennwort_User">
+          <End Type="TestSiteModel.User" Role="User" Multiplicity="1" />
+          <End Type="TestSiteModel.Kennwort" Role="Kennwort" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Kennwort">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Password_User">
+          <End Type="TestSiteModel.User" Role="User" Multiplicity="1" />
+          <End Type="TestSiteModel.Password" Role="Password" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Password">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Salt_User">
+          <End Type="TestSiteModel.User" Role="User" Multiplicity="1" />
+          <End Type="TestSiteModel.Salt" Role="Salt" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Salt">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_User">
+          <End Type="TestSiteModel.User" Role="User" Multiplicity="1" />
+          <End Type="TestSiteModel.User" Role="User1" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="User1">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="TestSiteModelStoreContainer" CdmEntityContainer="TestSiteEntities2">
-          <EntitySetMapping Name="CarCompany">
-            <EntityTypeMapping TypeName="TestSiteModel.CarCompany">
-              <MappingFragment StoreEntitySet="CarCompany">
+          <EntitySetMapping Name="Email">
+            <EntityTypeMapping TypeName="TestSiteModel.Email">
+              <MappingFragment StoreEntitySet="Email">
+                <ScalarProperty Name="Verified" ColumnName="Verified" />
+                <ScalarProperty Name="Email1" ColumnName="Email" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="CarName" ColumnName="CarName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Kennwort">
+            <EntityTypeMapping TypeName="TestSiteModel.Kennwort">
+              <MappingFragment StoreEntitySet="Kennwort">
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="Kennwort1" ColumnName="Kennwort" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Password">
+            <EntityTypeMapping TypeName="TestSiteModel.Password">
+              <MappingFragment StoreEntitySet="Password">
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="Passwort" ColumnName="Passwort" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Salt">
+            <EntityTypeMapping TypeName="TestSiteModel.Salt">
+              <MappingFragment StoreEntitySet="Salt">
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
+                <ScalarProperty Name="Salt1" ColumnName="Salt" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="User">
             <EntityTypeMapping TypeName="TestSiteModel.User">
               <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="CarCompanyID" ColumnName="CarCompanyID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

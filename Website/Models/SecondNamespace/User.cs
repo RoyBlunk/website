@@ -14,10 +14,27 @@ namespace Website.Models.SecondNamespace
     
     public partial class User
     {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public int CarCompanyID { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public User()
+        {
+            this.Email = new HashSet<Email>();
+            this.Kennwort = new HashSet<Kennwort>();
+            this.Password = new HashSet<Password>();
+            this.Salt = new HashSet<Salt>();
+        }
     
-        public virtual CarCompany CarCompany { get; set; }
+        public int ID { get; set; }
+        public bool Deleted { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Email> Email { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Kennwort> Kennwort { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Password> Password { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Salt> Salt { get; set; }
+        public virtual User User1 { get; set; }
+        public virtual User User2 { get; set; }
     }
 }

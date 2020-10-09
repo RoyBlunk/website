@@ -57,6 +57,9 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.4\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
@@ -67,6 +70,12 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Http, Version=5.2.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.4\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.4\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -132,6 +141,15 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Classes\clsException.cs" />
+    <Compile Include="Classes\Cookie.cs" />
+    <Compile Include="Classes\Data.cs" />
+    <Compile Include="Classes\General.cs" />
+    <Compile Include="Classes\Generator.cs" />
+    <Compile Include="Classes\Template.cs" />
+    <Compile Include="Classes\User.cs" />
+    <Compile Include="Controllers\ErrorPageController.cs" />
+    <Compile Include="Controllers\GeneralController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PartnerController.cs" />
     <Compile Include="Global.asax.cs">
@@ -152,7 +170,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DatenbankKA.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\SecondNamespace\CarCompany.cs">
+    <Compile Include="Models\SecondNamespace\Email.cs">
+      <DependentUpon>TestSite.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SecondNamespace\Kennwort.cs">
+      <DependentUpon>TestSite.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SecondNamespace\Password.cs">
+      <DependentUpon>TestSite.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SecondNamespace\Salt.cs">
       <DependentUpon>TestSite.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SecondNamespace\TestSite.Context.cs">
@@ -183,6 +210,10 @@
       <DependentUpon>DatenbankKA.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\General\RegisterLogin.svc.cs">
+      <DependentUpon>RegisterLogin.svc</DependentUpon>
+    </Compile>
+    <None Include="Views\General\RegisterLogin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
@@ -219,8 +250,6 @@
     <Content Include="Models\DatenbankKA.edmx.diagram">
       <DependentUpon>DatenbankKA.edmx</DependentUpon>
     </Content>
-    <Content Include="ErrorPages\NotFound.cshtml" />
-    <Content Include="Views\Errors\Error1.aspx" />
     <EntityDeploy Include="Models\SecondNamespace\TestSite.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>TestSite.Designer.cs</LastGenOutput>
@@ -228,6 +257,8 @@
     <Content Include="Models\SecondNamespace\TestSite.edmx.diagram">
       <DependentUpon>TestSite.edmx</DependentUpon>
     </Content>
+    <Content Include="Services\General\RegisterLogin.svc" />
+    <Content Include="Views\Error\Error.cshtml" />
     <None Include="Views\Partner\Test.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -238,9 +269,9 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\_Layout2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

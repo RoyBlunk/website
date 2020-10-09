@@ -12,18 +12,13 @@ namespace Website.Models.SecondNamespace
     using System;
     using System.Collections.Generic;
     
-    public partial class CarCompany
+    public partial class Password
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public CarCompany()
-        {
-            this.User = new HashSet<User>();
-        }
-    
         public int ID { get; set; }
-        public string CarName { get; set; }
+        public int UserID { get; set; }
+        public string Passwort { get; set; }
+        public bool Deleted { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User> User { get; set; }
+        public virtual User User { get; set; }
     }
 }

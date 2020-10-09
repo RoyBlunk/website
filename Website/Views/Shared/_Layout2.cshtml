@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Company</title>
@@ -15,12 +15,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Start", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Test2", "Test", "Partner", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Login", "RegisterLogin", "General", new { state = 0 }, null)</li>
-                    <li>@Html.ActionLink("Register", "RegisterLogin", "General", new { state = 1 }, null)</li>
+                    <li>@Html.ActionLink("Startseite", "Index", "Home")</li>
+                    <li>@Html.ActionLink("TestPartner", "Error", "Shared")</li>
+                    <li>@Html.ActionLink("Partner", "Test", "Partner")</li>
                 </ul>
             </div>
         </div>
@@ -29,13 +30,12 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - Meine Footer</p>
+            <p>&copy; @DateTime.Now.Year - Meine ASP.NET-Anwendung</p>
         </footer>
     </div>
 
     @Scripts.Render("~/bundles/jquery")
-    @RenderSection("scripts", required: false)
     @Scripts.Render("~/General/Scrips")
+    @RenderSection("scripts", required: false)
 </body>
 </html>
-

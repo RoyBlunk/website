@@ -25,7 +25,10 @@ namespace Website.Models.SecondNamespace
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<CarCompany> CarCompany { get; set; }
+        public virtual DbSet<Email> Email { get; set; }
+        public virtual DbSet<Kennwort> Kennwort { get; set; }
+        public virtual DbSet<Password> Password { get; set; }
+        public virtual DbSet<Salt> Salt { get; set; }
         public virtual DbSet<User> User { get; set; }
     }
 }

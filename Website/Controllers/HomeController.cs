@@ -19,7 +19,7 @@ namespace Website.Controllers
 
             using (Models.SecondNamespace.TestSiteEntities2 db = new Models.SecondNamespace.TestSiteEntities2())
             {
-                string comp = db.User.Where(i => i.Name == "Andreas").Select(i => i.CarCompany.CarName).FirstOrDefault();
+                string comp = "IDK";
                 ViewBag.CarCompany = comp;
             }
 
