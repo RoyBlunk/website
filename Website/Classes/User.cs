@@ -9,47 +9,45 @@ namespace Website.Classes
 {
     public class User
     {
-        public User()
+        public static ResultState Login(string kw, string pw)
         {
-
-        }
-
-        /// <summary>
-        /// Login user
-        /// </summary>
-        /// <param name="kw">kennword</param>
-        /// <param name="pw">password</param>
-        /// <returns>True if successfull logged in, false if failed somehow or method trigger exceptions</returns>
-        public static bool Login(string kw, string pw)
-        {
-            if (!String.IsNullOrEmpty(kw) && !String.IsNullOrEmpty(pw))
+            ResultState state = new ResultState();
+            if (!String.IsNullOrEmpty(kw))
             {
-                if (!Data.AccountExist(kw))
+                if (!String.IsNullOrEmpty(pw))
                 {
-                    if (!Data.IsOldPassword(kw, pw))
+                    if (Data.AccountExist(kw))
                     {
-                        return Data.LoginUser(kw, pw);
-                    } else
-                    {
-                        throw new OldPasswordException();
+                        if (!Data.IsOldPassword(kw, pw))
+                        {
+                            return Data.LoginUser(kw, pw);
+                        }
+                        else
+                        {
+                            state.SetState(false, 4);
+                        }
                     }
-                } else
-                {
-                    throw new NoAccountFoundException();
+                    else
+                    {
+                        state.SetState(false, 3);
+                    }
                 }
+                else
+                {
+                    state.SetState(false, 2);
+                }
+            } else
+            {
+                state.SetState(false, 1);
             }
-            return false;
+            return state;
         }
 
-        /// <summary>
-        /// Register user
-        /// </summary>
-        /// <param name="kw">kennwort</param>
-        /// <param name="pw">password</param>
-        /// <returns>True if data is successfull saved, false if failed somehow or methods trigger exception</returns>
-        public static bool Register(string kw, string pw)
+        public static ResultState Register(string kw, string pw)
         {
-            if (!String.IsNullOrEmpty(kw) && !String.IsNullOrEmpty(pw))
+            ResultState state = new ResultState();
+
+            if (!String.IsNullOrEmpty(kw))
             {
                 if (!Data.KennwortToShort(kw))
                 {
@@ -59,43 +57,69 @@ namespace Website.Classes
                         {
                             if (!Data.KennwortExist(kw))
                             {
-                                if (!Data.PasswortToShort(pw))
+                                if (!String.IsNullOrEmpty(pw))
                                 {
-                                    if (!Data.PasswortToLong(pw))
+                                    if (!Data.PasswortToShort(pw))
                                     {
-                                        if (!Data.PasswordInvalidChars(pw))
+                                        if (!Data.PasswortToLong(pw))
                                         {
-                                            return Data.RegisterUser(kw, pw);
-                                        } else
-                                        {
-                                            throw new PasswordInvalidCharsException();
+                                            if (!Data.PasswordInvalidChars(pw))
+                                            {
+                                                if (Data.RegisterUser(kw, pw))
+                                                {
+                                                    state.SetState(true, 15);
+                                                }
+                                                else
+                                                {
+                                                    state.SetState(false, 14);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                state.SetState(false, 13);
+                                            }
                                         }
-                                    } else
-                                    {
-                                        throw new PasswordToLongException();
+                                        else
+                                        {
+                                            state.SetState(false, 12);
+                                        }
                                     }
-                                } else
-                                {
-                                    throw new PasswordToShortException();
+                                    else
+                                    {
+                                        state.SetState(false, 11);
+                                    }
                                 }
-                            } else
-                            {
-                                throw new KennwortExistException();
+                                else
+                                {
+                                    state.SetState(false, 2);
+                                }
                             }
-                        } else
-                        {
-                            throw new KennwortInvalidCharsException();
+                            else
+                            {
+                                state.SetState(false, 10);
+                            }
                         }
-                    } else
-                    {
-                        throw new KennwortToLongException();
+                        else
+                        {
+                            state.SetState(false, 9);
+                        }
                     }
-                } else
+                    else
+                    {
+                        state.SetState(false, 8);
+                    }
+                }
+                else
                 {
-                    throw new KennwortToShortException();
+                    state.SetState(false, 7);
                 }
             }
-            return false;
+            else
+            {
+                state.SetState(false, 1);
+            }
+
+            return state;
         }
     }
 }

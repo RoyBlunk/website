@@ -13,23 +13,23 @@ $("form#registerForm").on("submit", (event) => {
                 pw: passwort
             },
             success: (e) => {
-                if (e.d == "true") {
-                    alert("Erfolgreich registiert...");
-                } else if (e.d == "false") {
-                    alert("Es konnte kein Account angelegt werden.")
-                } else {
-                    alert(e.d)
-                    clearFields("Register", event);
+                let result = JSON.parse(e.d);
+
+                if (!result.Success) {
+                    event.preventDefault();
                 }
+
+                console.log(result.Message);
             },
             error: () => {
-                alert("Beim Registrieren ist ein Fehler aufgetreten.");
-                clearFields("Register", event);
+                console.log("Beim Registrieren ist ein Fehler aufgetreten.");
+                clearFields(true);
+                event.preventDefault();
             }
         });
     } else {
-        alert("KW und PW überprüfen");
-        clearFields(null, event);
+        console.log("Bitte füllen Sie alle Felder korrekt aus.");
+        event.preventDefault();
     }
 });
 
@@ -47,40 +47,38 @@ $("form#loginForm").submit((event) => {
                 pw : passwort
             },
             success: (e) => {
-                if (e.d) {
-                    alert("Erfolgreich eingeloggt...");
-                } else {
-                    alert("Es wurde kein Account mit diesen Daten gefunden.");
-                    clearFields("Login", event);
+                let result = JSON.parse(e.d);
+
+                if (!result.Success) {
+                    event.preventDefault();
                 }
+
+                console.log(result.Message);
             },
             error: () => {
-                alert("Es ist ein Fehler beim Einloggen aufgetreten.");
-                clearFields("Login", event);
+                console.log("Es ist ein Fehler beim Einloggen aufgetreten.");
+                clearFields(false);
+                event.preventDefault();
             }
         });
     } else {
-        alert("KW und PW überprüfen");
-        clearFields(null, event);
+        console.log("Bitte füllen Sie alle Felder korrekt aus.");
+        event.preventDefault();
     }
 });
 
-function clearFields(type, event) {
-    if (type != null) {
-        switch (type) {
-            case "Login":
+function clearFields(register) {
+    if (register != null) {
+        switch (register) {
+            case false:
                 $("#kennwortLoginInput").val("");
                 $("#passwortLoginInput").val("");
                 break;
-            case "Register":
+            case true:
             default:
                 $("#kennwortRegisterInput").val("");
                 $("#passwortRegisterInput").val("");
                 break;
         }
-    }
-
-    if (event != null) {
-        event.preventDefault();
     }
 }

@@ -30,5 +30,15 @@ namespace Website.Classes
 
             return salt;
         }
+
+        public static string CreateCookieName()
+        {
+            return "TestCookieName";
+        }
+
+        public static string CreateCookieValue()
+        {
+            return "TestCookieValue";
+        }
     }
 }

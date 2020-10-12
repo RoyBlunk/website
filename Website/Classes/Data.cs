@@ -16,12 +16,7 @@ namespace Website.Classes
         private const int PasswortMaxLength = 64;
         private static Regex PasswortValidChars = new Regex("^[A-Za-z0-9\"!§$%&/()[\\]{}+\\-*_<>|#;.~]*$");
 
-        /// <summary>
-        /// Checks if Kennwort is to short
-        /// </summary>
-        /// <param name="kw">Kennwort</param>
-        /// <returns>True if Kennwort is null or shorter than const KennwortMinLength</returns>
-    public static bool KennwortToShort(string kw)
+        public static bool KennwortToShort(string kw)
         {
             if (!String.IsNullOrEmpty(kw))
             {
@@ -33,11 +28,6 @@ namespace Website.Classes
             return true;
         }
 
-        /// <summary>
-        /// Checks if the kennwort is to long
-        /// </summary>
-        /// <param name="kw">Kennwort</param>
-        /// <returns>True if Kennwort is longer than const KennwortMaxLength</returns>
         public static bool KennwortToLong(string kw)
         {
             if (!String.IsNullOrEmpty(kw))
@@ -50,12 +40,6 @@ namespace Website.Classes
             return false;
         }
 
-        /// <summary>
-        /// Checks if the input includes invalid characters
-        /// Valid chars: A-Za-z0-9
-        /// </summary>
-        /// <param name="kw">kennwort</param>
-        /// <returns>True if kennwort includes invalid characters (KennwortValidChars)</returns>
         public static bool KennwortInvalidChars(string kw)
         {
             if (!String.IsNullOrEmpty(kw))
@@ -68,11 +52,6 @@ namespace Website.Classes
             return true;
         }
 
-        /// <summary>
-        /// Checks if the kennwort already exist somewhere
-        /// </summary>
-        /// <param name="kw">kennwort</param>
-        /// <returns>True if the kennwort got found somewhere n Kennwort-Datatable</returns>
         public static bool KennwortExist(string kw)
         {
             if (!String.IsNullOrEmpty(kw))
@@ -86,7 +65,7 @@ namespace Website.Classes
                             .Select(i => i.UserID)
                             .FirstOrDefault();
 
-                        if (userID == null)
+                        if (userID == null || userID == 0)
                         {
                             return false;
                         }
@@ -97,11 +76,6 @@ namespace Website.Classes
             return true;
         }
 
-        /// <summary>
-        /// Checks if the password is to short
-        /// </summary>
-        /// <param name="pw">password</param>
-        /// <returns>True if the password is null or shorten than const PasswortMinLength</returns>
         public static bool PasswortToShort(string pw)
         {
             if (!String.IsNullOrEmpty(pw))
@@ -114,11 +88,6 @@ namespace Website.Classes
             return true;
         }
 
-        /// <summary>
-        /// Checks if the passwort is to long
-        /// </summary>
-        /// <param name="pw">password</param>
-        /// <returns>True if the password is longer than const PasswortMaxLength</returns>
         public static bool PasswortToLong(string pw)
         {
             if (!String.IsNullOrEmpty(pw))
@@ -131,12 +100,6 @@ namespace Website.Classes
             return false;
         }
 
-        /// <summary>
-        /// Checks if the password includes invalid chars
-        /// Valid chars: A-Za-z0-9"!§$%&/()[]{}+-*_<>|#;.~]*$
-        /// </summary>
-        /// <param name="pw">password</param>
-        /// <returns>True if the password is null or includes any invalid char</returns>
         public static bool PasswordInvalidChars(string pw)
         {
             if (!String.IsNullOrEmpty(pw))
@@ -149,11 +112,6 @@ namespace Website.Classes
             return true;
         }
 
-        /// <summary>
-        /// Checks if any account exist with this kennwort
-        /// </summary>
-        /// <param name="kw">kennwort</param>
-        /// <returns>True if null or any account got found</returns>
         public static bool AccountExist(string kw)
         {
             if (!String.IsNullOrEmpty(kw))
@@ -167,7 +125,7 @@ namespace Website.Classes
                             .Select(i => i.UserID)
                             .FirstOrDefault();
 
-                        if (userID != null)
+                        if (userID != null && userID != 0)
                         {
                             return true;
                         }
@@ -179,13 +137,7 @@ namespace Website.Classes
             return true;
         }
 
-        /// <summary>
-        /// Checks if the user entered an old password
-        /// </summary>
-        /// <param name="kw">kennword</param>
-        /// <param name="pw">password</param>
-        /// <returns>True if it is an old password of this account, false if any parameter is null or empty or its not a old password</returns>
-        public static bool IsOldPassword (string kw, string pw)
+        public static bool IsOldPassword(string kw, string pw)
         {
             if (!String.IsNullOrEmpty(kw) && !String.IsNullOrEmpty(pw))
             {
@@ -198,7 +150,7 @@ namespace Website.Classes
                                 .Select(i => i.UserID)
                                 .FirstOrDefault();
 
-                        if (userID != null)
+                        if (userID != null && userID != 0)
                         {
                             string dbSalt = database.Salt.Where(i => i.UserID == userID && i.Deleted == false).Select(i => i.Salt1).FirstOrDefault();
                             List<string> dbPasswords = database.Password.Where(i => i.UserID == userID && i.Deleted == true).Select(i => i.Passwort).ToList();
@@ -232,10 +184,7 @@ namespace Website.Classes
                                     return foundInactivePassword;
                                 }
                             }
-                        } else
-                        {
-                            throw new NoAccountFoundException();
-                        }
+                        } 
                     }
                 }
                 catch { }
@@ -243,12 +192,15 @@ namespace Website.Classes
             return false;
         }
 
-        /// <summary>
-        /// Register User Method
-        /// </summary>
-        /// <param name="kw">kennwort</param>
-        /// <param name="pw">password</param>
-        /// <returns>True if data is successfull saved, false if failed</returns>
+        private static bool CheckPasswords(string pw1, string pw2)
+        {
+            if (!String.IsNullOrEmpty(pw1) && !String.IsNullOrEmpty(pw2))
+            {
+
+            }
+            return false;
+        }
+
         public static bool RegisterUser(string kw, string pw)
         {
             byte[] salt = Generator.CreateSalt();
@@ -296,14 +248,10 @@ namespace Website.Classes
             return false;
         }
 
-        /// <summary>
-        /// Checks if the user can log in
-        /// </summary>
-        /// <param name="kw">kennwort</param>
-        /// <param name="pw">password</param>
-        /// <returns>True if successfull logged in, false if failed</returns>
-        public static bool LoginUser(string kw, string pw)
+        public static ResultState LoginUser(string kw, string pw)
         {
+            ResultState state = new ResultState();
+
             string dbSalt;
             string dbPassword;
             try
@@ -312,7 +260,7 @@ namespace Website.Classes
                 {
                     int? userID = db.Kennwort.Where(i => i.Kennwort1 == kw && i.Deleted == false).Select(i => i.UserID).FirstOrDefault();
 
-                    if (userID != null)
+                    if (userID != null && userID != 0)
                     {
                         dbSalt = db.Salt.Where(i => i.UserID == userID && i.Deleted == false).Select(i => i.Salt1).FirstOrDefault();
                         dbPassword = db.Password.Where(i => i.UserID == userID && i.Deleted == false).Select(i => i.Passwort).FirstOrDefault();
@@ -326,20 +274,79 @@ namespace Website.Classes
                             {
                                 string hashPW = Convert.ToBase64String(bpw);
 
-                                if (!String.IsNullOrEmpty(hashPW) && !String.IsNullOrEmpty(dbPassword))
+                                if (!String.IsNullOrEmpty(hashPW))
                                 {
-                                    if (hashPW == dbPassword)
+                                    if (!String.IsNullOrEmpty(dbPassword))
                                     {
-                                        return Cookie.CreateUserLogin(kw, pw);
+                                        if (hashPW == dbPassword)
+                                        {
+                                            return Cookie.CreateUserLogin(kw, pw);
+                                        }
+                                        else
+                                        {
+                                            state.SetState(false, 17);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                    else
+                    {
+                        state.SetState(false, 3);
+                    }
                 }
             }
-            catch { }
-            return false;
+            catch {
+                state.SetState(false, 5);
+            }
+            return state;
+        }
+    }
+
+    public class ResultState
+    {
+        private IDictionary<int, string> Messages = new Dictionary<int, string>()
+        {
+            { 0, "Es wurde keine Fehlermeldung angegeben." },
+            { 1, "Das Kennwort enthält keinen Wert." },
+            { 2, "Das Passwort enthält keinen Wert." },
+            { 3, "Mit diesem Kennwort wurde kein aktiviertes Konto gefunden." },
+            { 4, "Sie haben ein altes Passwort benutzt." },
+            { 5, "Beim einloggen ist ein Fehler aufgetreten." },
+            { 6, "Der Login ist erfolgreich."},
+            { 7, "Das Kennwort unterschreitet die minimale Zeichenlänge." },
+            { 8, "Das Kennwort überschreitet die maximale Zeichenlänge." },
+            { 9, "Das Kennwort enthält unzulässige Zeichen." },
+            { 10, "Das Kennwort ist bereits mit einem anderem Konto verknüpft." },
+            { 11, "Das Passwort unterschreitet die minimale Zeichenlänge." },
+            { 12, "Das Passwort überschreitet die maximale Zeichenlänge." },
+            { 13, "Das Passwort enthält unzulässige Zeichen." },
+            { 14, "Beim registrieren ist ein Fehler aufgetreten." },
+            { 15, "Die Registrierung ist erfolgreich." },
+            { 16, "Es ist ein Datenbankfehler aufgetreten." },
+            { 17, "Das Passwort ist nicht korrekt." },
+            { 18, "Beim Erstellen des Cookie ist ein Fehler aufgetreten." }
+        };
+
+        public bool Success { get; set; }
+        public string Message { get; set; }
+
+        public ResultState()
+        {
+            this.Success = false;
+            this.Message = Messages[0];
+        }
+
+        public ResultState(bool value, int messageIndex)
+        {
+            SetState(value, messageIndex);
+        }
+
+        public void SetState(bool value, int messageIndex)
+        {
+            this.Success = value;
+            this.Message = Messages[messageIndex];
         }
     }
 }
