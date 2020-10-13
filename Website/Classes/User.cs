@@ -3,42 +3,102 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace Website.Classes
 {
     public class User
     {
+        private const int KennwortMinLength = 8;
+        private const int KennwortMaxLength = 64;
+        private static Regex KennwortValidChars = new Regex("^[a-zA-Z0-9]*$");
+
+        private const int PasswortMinLength = 8;
+        private const int PasswortMaxLength = 64;
+        private static Regex PasswortValidChars = new Regex("^[A-Za-z0-9\"!§$%&/()[\\]{}+\\-*_<>|#;.~]*$");
+
+
         public static ResultState Login(string kw, string pw)
         {
             ResultState state = new ResultState();
-            if (!String.IsNullOrEmpty(kw))
+            try
             {
-                if (!String.IsNullOrEmpty(pw))
-                {
-                    if (Data.AccountExist(kw))
+                if (!String.IsNullOrEmpty(kw) && !String.IsNullOrWhiteSpace(kw))
+                {       
+                    if (!String.IsNullOrEmpty(pw) && !String.IsNullOrWhiteSpace(pw))
                     {
-                        if (!Data.IsOldPassword(kw, pw))
+                        using (Models.SecondNamespace.TestSiteEntities2 database = new Models.SecondNamespace.TestSiteEntities2())
                         {
-                            return Data.LoginUser(kw, pw);
-                        }
-                        else
-                        {
-                            state.SetState(false, 4);
+                            int? userID = database.Kennwort
+                                .AsEnumerable()
+                                .Where(i => i.Kennwort1 == kw && i.Deleted == false)
+                                .Select(i => i.UserID)
+                                .FirstOrDefault();
+                                
+                            if (userID != null && userID != 0)
+                            {
+                                string dbSalt = database.Salt
+                                    .Where(i => i.UserID == userID && i.Deleted == false)
+                                    .Select(i => i.Salt1)
+                                    .FirstOrDefault();
+
+                                List<string> dbPasswords = database.Password
+                                    .Where(i => i.UserID == userID)
+                                    .OrderBy(i => i.Deleted)
+                                    .Select(i => i.Passwort)
+                                    .ToList();
+
+                                if (!String.IsNullOrEmpty(dbSalt) && !String.IsNullOrWhiteSpace(dbSalt) && dbPasswords.Count > 0)
+                                {
+                                    byte[] salt = Convert.FromBase64String(dbSalt);
+                                    byte[] bytePW = Generator.CreateHash(pw, salt);
+
+                                    if (bytePW != null && bytePW.Length > 0)
+                                    {
+                                        string hashPW = Convert.ToBase64String(bytePW);
+
+                                        if (!String.IsNullOrEmpty(hashPW) && !String.IsNullOrWhiteSpace(hashPW))
+                                        {
+                                            foreach (string curPW in dbPasswords)
+                                            {
+                                                if (curPW == hashPW)
+                                                {
+                                                    if (dbPasswords.IndexOf(curPW) == 0)
+                                                    {
+                                                        return Cookie.CreateUserLogin(kw, pw);
+                                                    }
+                                                    else
+                                                    {
+                                                        state.SetState(false, 4);
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            state.SetState(false, 17);
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                state.SetState(false, 3);
+                            }
                         }
                     }
                     else
                     {
-                        state.SetState(false, 3);
+                        state.SetState(false, 2);
                     }
                 }
                 else
                 {
-                    state.SetState(false, 2);
+                    state.SetState(false, 1);
                 }
-            } else
+            }
+            catch
             {
-                state.SetState(false, 1);
+                state.SetState(false, 5);
             }
             return state;
         }
@@ -46,79 +106,123 @@ namespace Website.Classes
         public static ResultState Register(string kw, string pw)
         {
             ResultState state = new ResultState();
-
-            if (!String.IsNullOrEmpty(kw))
+            try
             {
-                if (!Data.KennwortToShort(kw))
+                if (!String.IsNullOrEmpty(kw) && !String.IsNullOrWhiteSpace(kw))
                 {
-                    if (!Data.KennwortToLong(kw))
+                    if (kw.Length >= KennwortMinLength)
                     {
-                        if (!Data.KennwortInvalidChars(kw))
+                        if (kw.Length <= KennwortMaxLength)
                         {
-                            if (!Data.KennwortExist(kw))
+                            if (KennwortValidChars.IsMatch(kw))
                             {
-                                if (!String.IsNullOrEmpty(pw))
+                                using (Models.SecondNamespace.TestSiteEntities2 database = new Models.SecondNamespace.TestSiteEntities2())
                                 {
-                                    if (!Data.PasswortToShort(pw))
+                                    int? userID = database.Kennwort
+                                        .AsEnumerable()
+                                        .Where(i => i.Kennwort1 == kw)
+                                        .Select(i => i.UserID)
+                                        .FirstOrDefault();
+
+                                    if (userID == null || userID == 0)
                                     {
-                                        if (!Data.PasswortToLong(pw))
+                                        if (!String.IsNullOrEmpty(pw) && !String.IsNullOrWhiteSpace(pw))
                                         {
-                                            if (!Data.PasswordInvalidChars(pw))
+                                            if (pw.Length >= PasswortMinLength)
                                             {
-                                                if (Data.RegisterUser(kw, pw))
+                                                if (pw.Length <= PasswortMaxLength)
                                                 {
-                                                    state.SetState(true, 15);
+                                                    if (PasswortValidChars.IsMatch(pw))
+                                                    {
+                                                        byte[] salt = Generator.CreateSalt();
+
+                                                        if (salt != null && salt.Length > 0)
+                                                        {
+                                                            byte[] bytePW = Generator.CreateHash(pw, salt);
+
+                                                            if (bytePW != null && bytePW.Length > 0)
+                                                            {
+                                                                string newPW = Convert.ToBase64String(bytePW);
+                                                                string newSalt = Convert.ToBase64String(salt);
+
+                                                                if (!String.IsNullOrEmpty(newPW) && !String.IsNullOrWhiteSpace(newPW) && !String.IsNullOrEmpty(newSalt) && !String.IsNullOrWhiteSpace(newSalt))
+                                                                {
+                                                                    Models.SecondNamespace.User _User = new Models.SecondNamespace.User();
+                                                                    Models.SecondNamespace.Salt _Salt = new Models.SecondNamespace.Salt();
+                                                                    Models.SecondNamespace.Password _Password = new Models.SecondNamespace.Password();
+                                                                    Models.SecondNamespace.Kennwort _Kennwort = new Models.SecondNamespace.Kennwort();
+
+                                                                    _Salt.UserID = _User.ID;
+                                                                    _Salt.Salt1 = newSalt;
+
+                                                                    _Password.UserID = _User.ID;
+                                                                    _Password.Passwort = newPW;
+
+                                                                    _Kennwort.UserID = _User.ID;
+                                                                    _Kennwort.Kennwort1 = kw;
+
+                                                                    database.User.Add(_User);
+                                                                    database.Salt.Add(_Salt);
+                                                                    database.Password.Add(_Password);
+                                                                    database.Kennwort.Add(_Kennwort);
+
+                                                                    database.SaveChanges();
+
+                                                                    state.SetState(true, 15);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        state.SetState(false, 13);
+                                                    }
                                                 }
                                                 else
                                                 {
-                                                    state.SetState(false, 14);
+                                                    state.SetState(false, 12);
                                                 }
-                                            }
+                                            } 
                                             else
                                             {
-                                                state.SetState(false, 13);
+                                                state.SetState(false, 11);
                                             }
                                         }
                                         else
                                         {
-                                            state.SetState(false, 12);
+                                            state.SetState(false, 2);
                                         }
                                     }
                                     else
                                     {
-                                        state.SetState(false, 11);
+                                        state.SetState(false, 10);
                                     }
-                                }
-                                else
-                                {
-                                    state.SetState(false, 2);
                                 }
                             }
                             else
                             {
-                                state.SetState(false, 10);
+                                state.SetState(false, 9);
                             }
                         }
                         else
                         {
-                            state.SetState(false, 9);
+                            state.SetState(false, 8);
                         }
                     }
                     else
                     {
-                        state.SetState(false, 8);
+                        state.SetState(false, 7);
                     }
                 }
                 else
                 {
-                    state.SetState(false, 7);
+                    state.SetState(false, 1);
                 }
             }
-            else
+            catch
             {
-                state.SetState(false, 1);
+                state.SetState(false, 14);
             }
-
             return state;
         }
     }

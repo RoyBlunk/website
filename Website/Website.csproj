@@ -142,9 +142,9 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Classes\Cookie.cs" />
-    <Compile Include="Classes\Data.cs" />
     <Compile Include="Classes\General.cs" />
     <Compile Include="Classes\Generator.cs" />
+    <Compile Include="Classes\ResultState.cs" />
     <Compile Include="Classes\Template.cs" />
     <Compile Include="Classes\User.cs" />
     <Compile Include="Controllers\ErrorPageController.cs" />
